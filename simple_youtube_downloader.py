@@ -98,7 +98,7 @@ root.geometry("500x400")
 frame = ctk.CTkFrame(master=root)
 frame.pack(pady=20, padx=30, fill="both", expand=True)
 
-label_title = ctk.CTkLabel(master=frame, text="YouTube Video Downloader", font=("Roboto", 24))
+label_title = ctk.CTkLabel(master=frame, text="Simple YouTube Downloader", font=("Roboto", 24))
 label_title.pack(pady=10, padx=10)
 
 entry_youtube_url = ctk.CTkEntry(master=frame, placeholder_text="YouTube video URL", width=300)
