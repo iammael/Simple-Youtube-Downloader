@@ -21,25 +21,22 @@ def load_config():
 	try:
 		with open("config.json", "r") as config_file:
 			config = json.load(config_file)
-	except FileNotFoundError:
-		logging.warning("Config file not found, creating default config.")
-		with open("config.json", "w") as config_file:
-			json.dump(default_config, config_file, indent=4)
-		config = default_config
-	except json.JSONDecodeError:
-		logging.error("Config file is corrupt. Creating a new default config.")
+	except FileNotFoundError or json.JSONDecodeError:
+		logging.warning("Config file not found or corrupted, creating default config.")
 		with open("config.json", "w") as config_file:
 			json.dump(default_config, config_file, indent=4)
 		config = default_config
 	return config
 
+
+# Set appearance mode based on the configuration
 def set_appearance(config):
-	# Set appearance mode based on the configuration
 	ctk.set_appearance_mode(config['theme'])
 	ctk.set_default_color_theme(config['color_theme'])
 
+
+# Prompt the user to select an output folder and update the configuration
 def set_output_folder(config):
-	# Prompt the user to select an output folder and update the configuration
 	output_folder = filedialog.askdirectory()
 	if output_folder:
 		config["default_output_folder"] = output_folder
@@ -47,6 +44,7 @@ def set_output_folder(config):
 			json.dump(config, config_file, indent=4)
 		label_output_folder.configure(text="Save folder: " + output_folder)
 		logging.info("Output folder set to: " + output_folder)
+
 
 def download_video(url, formats, output_folder):
 	try:
@@ -64,8 +62,9 @@ def download_video(url, formats, output_folder):
 	except Exception as e:
 		logging.error(f"Error downloading the video: {e}")
 
+
+# Convert the downloaded video to the specified formats
 def convert_file(youtube_object, formats, video_path, output_folder):
-	# Convert the downloaded video to the specified formats
 	for format in formats:
 		audio_path = os.path.join(output_folder, youtube_object.title + f".{format}")
 		try:
@@ -76,8 +75,9 @@ def convert_file(youtube_object, formats, video_path, output_folder):
 		except Exception as e:
 			logging.error(f"Error converting to {format}: {e}")
 
+
+# Get the YouTube URL and selected formats, then initiate the download
 def on_download():
-	# Get the YouTube URL and selected formats, then initiate the download
 	url = entry_youtube_url.get()
 	formats = []
 	if checkbox_mp3.get():
@@ -89,6 +89,9 @@ def on_download():
 	else:
 		messagebox.showwarning("Warning", "Please enter a valid YouTube URL.")
 
+
+
+# Create the GUI
 config = load_config()
 set_appearance(config)
 
@@ -120,4 +123,6 @@ button_browse_output_folder.pack(pady=10, padx=10)
 button = ctk.CTkButton(master=frame, text="Download", command=on_download)
 button.pack(pady=10, padx=10)
 
-root.mainloop()
+
+if __name__ == "__main__":
+	root.mainloop()
